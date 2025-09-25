@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulir Pendaftaran</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="w-full max-w-lg mx-auto bg-white p-8 rounded-2xl shadow-lg">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Formulir Pernyataan</h1>
+    <p class="text-center text-gray-500 mb-8">Silakan isi data Anda dengan lengkap dan benar.</p>
+
+    <form id="pendaftaranForm" class="space-y-6">
+      <div>
+        <label for="Nama_Lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+        <input type="text" id="Nama_Lengkap" name="Nama_Lengkap" required
+          class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+      </div>
+      <div>
+        <label for="Nomor_WA" class="block text-sm font-medium text-gray-700">Nomor WhatsApp (Format: 628...)</label>
+        <input type="tel" id="Nomor_WA" name="Nomor_WA" required pattern="^628[0-9]{8,12}$"
+          placeholder="Contoh: 6281234567890"
+          class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        <small class="text-gray-500">Awali dengan 62, tanpa tanda + atau spasi.</small>
+      </div>
+      <div>
+        <label for="Nama_Kegiatan" class="block text-sm font-medium text-gray-700">Nama Kegiatan</label>
+        <input type="text" id="Nama_Kegiatan" name="Nama_Kegiatan" required
+          class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+      </div>
+      <div>
+        <label for="Tanggal_Mulai" class="block text-sm font-medium text-gray-700">Tanggal Mulai Pendaftaran</label>
+        <input type="date" id="Tanggal_Mulai" name="Tanggal_Mulai" required
+          class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+      </div>
+      <div>
+        <label for="Masa_Tenggang_Hari" class="block text-sm font-medium text-gray-700">Masa Tenggang (Hari)</label>
+        <input type="number" id="Masa_Tenggang_Hari" name="Masa_Tenggang_Hari" required placeholder="Contoh: 7"
+          class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <button type="submit" id="submitBtn"
+        class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 shadow-lg">
+        Kirim Pendaftaran
+      </button>
+    </form>
+    <div id="responseMessage" class="mt-6 text-center"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('pendaftaranForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const responseMessage = document.getElementById('responseMessage');
+
+    // GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxHg9Xy9FCO5egc8a62mmV6AzC0jWR9AtOb2_N4RYQOAnxNb-QuLr2hOQRtAUPk-seG/exec';
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Mengirim...';
+      responseMessage.textContent = '';
+
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => {
+          if (response.ok) {
+            responseMessage.innerHTML = '<p class="text-green-600 font-semibold">Pendaftaran berhasil! Terima kasih.</p>';
+            form.reset();
+          } else {
+            throw new Error('Gagal mengirim data.');
+          }
+        })
+        .catch(error => {
+          console.error('Error!', error.message);
+          responseMessage.innerHTML = '<p class="text-red-600 font-semibold">Terjadi kesalahan. Silakan coba lagi.</p>';
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Kirim Pendaftaran';
+        });
+    });
+  </script>
+</body>
+
+</html>
